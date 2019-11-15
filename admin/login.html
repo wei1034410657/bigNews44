@@ -38,6 +38,77 @@
     </div>
   </div>
 
+  <!-- 使用bootstrap的模态框 -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <script src="./libs/http.js"></script>
+  <script>
+    //入口函数
+    $(function () {
+      //登录思路
+      // 1.给登录按钮注册点击事件
+      //2.组织默认跳转事件(表单submit 会自动跳转)
+      //3. 获取用户名和密码
+      //4. 非空判断
+      //5. ajax发送请求
+      //6. 处理响应结果 a.成功:跳转管理系统首页 b.失败:提示用户
+
+      // 1.给登录按钮注册点击事件
+      $('.input_sub').on('click', function (e) {
+        //2.组织默认跳转事件(表单submit 会自动跳转)
+        e.preventDefault();
+        //3. 获取用户名和密码
+        var username = $('.input_txt').val().trim();  //去掉前后空格
+        var password = $('.input_pass').val().trim();
+        //4. 非空判断
+        if (username == '' || password == '') {
+          // alert('用户名与密码不能为空!');
+          $('#myModal .modal-body').text('用户名与密码不能为空!');
+          $('#myModal').modal();
+          return;
+        };
+        //5. ajax发送请求
+        $.ajax({
+          type: 'post',
+          url: BigNew.user_login,
+          data: {
+            username: username,
+            password: password
+          },
+          success: function (backData) {
+            console.log(backData);
+            $('#myModal .modal-body').text(backData.msg);
+            $('#myModal').modal();
+            //6. 处理响应结果 a.成功:跳转管理系统首页 b.失败:提示用户
+            if (backData.code == 200) {
+              //账号密码正确,会返回一个token,把他存在本地
+              window.localStorage.setItem('token', backData.token);
+              // hidden.bs.modal 此事件在模态框被隐藏（并且同时在 CSS 过渡效果完成）之后被触发。
+              $('#myModal').on('hidden.bs.modal', function (e) {
+                //跳转首页
+                window.location.href = './index.html';
+              })
+            }
+          }
+        })
+      });
+    });
+  </script>
 </body>
 
 </html>
