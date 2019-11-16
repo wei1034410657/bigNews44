@@ -30,9 +30,12 @@
             <div class="level01"><a href="#"><i class="iconfont icon-icon-article"></i><span>文章管理</span><b
                         class="iconfont icon-arrowdownl"></b></a></div>
             <ul class="level02">
-                <li><a href="./article_list.html" target="myIframe"><i class="iconfont icon-previewright"></i><span>文章列表</span></a></li>
-                <li><a href="./article_release.html" target="myIframe"><i class="iconfont icon-previewright"></i><span>发表文章</span></a></li>
-                <li><a href="./article_category.html" target="myIframe"><i class="iconfont icon-previewright"></i><span>文章类别管理</span></a>
+                <li><a href="./article_list.html" target="myIframe"><i
+                            class="iconfont icon-previewright"></i><span>文章列表</span></a></li>
+                <li><a href="./article_release.html" target="myIframe"><i
+                            class="iconfont icon-previewright"></i><span>发表文章</span></a></li>
+                <li><a href="./article_category.html" target="myIframe"><i
+                            class="iconfont icon-previewright"></i><span>文章类别管理</span></a>
                 </li>
             </ul>
 
@@ -51,7 +54,7 @@
         </div>
         <!-- 右侧主体内容 -->
         <div class="main" id="main_body">
-           <iframe name="myIframe" src="./main_count.html" frameborder="0" style="width: 100%; height:100%"></iframe>
+            <iframe name="myIframe" src="./main_count.html" frameborder="0" style="width: 100%; height:100%"></iframe>
         </div>
     </div>
 
@@ -65,10 +68,10 @@
                 // },
                 success: function (backData) {
                     console.log(backData);
-                    if(backData.code ==200){
-                            $('.user_info>span>i').text(backData.data.nickname);
-                            $('.user_info>img').attr('src',backData.data.userPic);
-                            $('.user_center_link>img').attr('src',backData.data.userPic);
+                    if (backData.code == 200) {
+                        $('.user_info>span>i').text(backData.data.nickname);
+                        $('.user_info>img').attr('src', backData.data.userPic);
+                        $('.user_center_link>img').attr('src', backData.data.userPic);
                     }
                 }
             })
@@ -86,11 +89,37 @@
 
             //二 登出
             //1.给登出按钮设置一点击事件
-            $('.logout').on('click',function(){
+            $('.logout').on('click', function () {
                 //2.删除token .跳转到登录页面
                 window.localStorage.removeItem('token');
-                window.location.href='./login.html';
+                window.location.href = './login.html';
+            });
+
+            //三: 首页左侧一级菜单设置点击事件
+            $('div.level01').on('click', function () {
+                //当前点击的设置一个active类,其他的兄弟移除active类. 
+                $(this).addClass('active').siblings('div').removeClass('active');
+                //如果点击的是文章管理
+                if ($(this).index() == 1) {
+                    $('ul.level02').slideToggle(); //二级菜单显示就隐藏,隐藏就显示
+
+                    //设置小尖尖的旋转 (其实就是设置有咩有rotate0类- 本质是c3的旋转动画)
+                    $(this).find('b').toggleClass('rotate0');
+
+                    //mor选中第一个二级菜单
+                    $('ul.level02>li:eq(0)>a')[0].click();
+                    //jQuery对象的click()事件,他只会触发js单击事件,而不会触发a标签的默认跳转事件. 
+                    //dom对象的click()事件,他不仅会触发js单击事件,还会触发a标签的默认跳转事件
+
+
+                }
             })
+            //四: 首页左侧二级菜单设置点击事件
+            $('ul.level02>li').on('click', function () {
+                //当前点击的添加active类,其他的兄弟移除active类
+                $(this).addClass('active').siblings('li').removeClass('active');
+            })
+
         })
 
     </script>
